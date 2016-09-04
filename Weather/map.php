@@ -4,7 +4,7 @@
 	$cities_list = file_get_contents("cities.json");
 	$cities_list = json_decode($cities_list,true);
 	
-	//$map_api_key = "AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc";	
+	//FILTER example: $place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE country = 'TW'");
 
 	$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
 	//echo $place_coord;
@@ -15,7 +15,6 @@
 		$points_list[] = array($row['coord_lat'],$row['coord_lon']);
 	}
 	//echo json_encode($points_list);
-	//echo $coord_lon, $coord_lat;
 ?>
 
 <html>
@@ -41,9 +40,9 @@
 
 		<script>
 		function initMap() {
-			var myLatLng = {lat: 42.7, lng: 23.32};
+			var myLatLng = {lat: 0.0, lng: 0.0};
 			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 7,
+				zoom: 3,
 				center: myLatLng
 			});
 
@@ -65,6 +64,7 @@
     		</script>
 
     		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc&callback=initMap">
+		//map_api_key = "AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc";
     		</script>
 
 
