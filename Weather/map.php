@@ -56,7 +56,7 @@
 				var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(points_list[0][i][0], points_list[0][i][1]),
 					map: map,
-					title: 'Hello World!'
+					title: 'Place'
 				});
 				i++;
 				//window.alert(points_list[1][i][0]);
