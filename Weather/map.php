@@ -1,11 +1,11 @@
 <?php
 	$con = mysql_connect("localhost", "root", "admin") or die(mysql_error());
 	mysql_select_db("weather",$con);
+	$cities_list = file_get_contents("cities.json");
+	$cities_list = json_decode($cities_list,true);
 	
 	//$map_api_key = "AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc";	
 
-	$coord_lon = $_SESSION['coord_lon'];
-	$coord_lat = $_SESSION['coord_lon'];
 	$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
 	//echo $place_coord;
 
@@ -14,7 +14,7 @@
 		//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |";
 		$points_list[] = array($row['coord_lat'],$row['coord_lon']);
 	}
-	echo json_encode($points_list);
+	//echo json_encode($points_list);
 	//echo $coord_lon, $coord_lat;
 ?>
 
@@ -49,7 +49,7 @@
 
 			var points_list = [<?php echo json_encode($points_list);?>];
 			var i = 0, points_count = points_list[0].length;
-			//window.alert(points_count);
+			window.alert(points_count);
 			
 	
 			while(i <= points_count){
@@ -59,7 +59,7 @@
 					title: 'Hello World!'
 				});
 				i++;
-				//window.alert(points_list[0][1][1]);
+				//window.alert(points_list[1][i][0]);
 			}
       		}
     		</script>
