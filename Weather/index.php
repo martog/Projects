@@ -5,13 +5,22 @@
 	$cities_list = file_get_contents("cities.json");
 	$cities_list = json_decode($cities_list,true);
 	$i = 0;
-	while($i<=50){
-		echo "CITY: ".$cities_list['China'][$i];
+	while($i<=500){
+		//echo "CITY: ".$cities_list['China'][$i];
 
 	
 		$city_name_search = $_POST['city'];
+		$country_s = "China";
 		$api_key = "01156208e1bd1e99995d141ee0b8f7f0";
-		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$cities_list['China'][$i]."&APPID=".$api_key);
+
+		//for search use this: $jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$city_name_search."&APPID=".$api_key);
+
+		if($i == 500){
+			$country_s = "Germany";
+			$i = 0;	
+		}
+
+		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$cities_list[$country_s][$i]."&APPID=".$api_key);
 		$data = json_decode($jsondata, true);
 
 		$id = $data['id'];
@@ -43,9 +52,6 @@
 		$i++;
 	}
 
-//da suzdam otdelna stranica s vizualizirane na bazata danni i vuzmojnost za filtraciq
-//da se zapi6e v database  V
-//da se vizualizirat koordinatite na google maps, prez apito na google, kato se filtrirat
 ?>
 
 <html>
