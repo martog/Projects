@@ -5,7 +5,7 @@
 	$cities_list = file_get_contents("cities.json");
 	$cities_list = json_decode($cities_list,true);
 	$i = 0;
-	while($i<=500){
+	while($i<=1000){
 		//echo "CITY: ".$cities_list['China'][$i];
 
 	
@@ -15,10 +15,6 @@
 
 		//for search use this: $jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$city_name_search."&APPID=".$api_key);
 
-		if($i == 500){
-			$country_s = "Germany";
-			$i = 0;	
-		}
 
 		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$cities_list[$country_s][$i]."&APPID=".$api_key);
 		$data = json_decode($jsondata, true);
