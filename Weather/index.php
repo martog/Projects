@@ -2,38 +2,37 @@
 	$con = mysql_connect("localhost", "root", "admin") or die(mysql_error());
 	mysql_select_db("weather",$con);
 
-	$cities_list = file_get_contents("cities.json");
-	$cities_list = json_decode($cities_list,true);
-	$i = 0;
-	while($i<=1000){
+	//$i = 2172797;
+	//while($i<=2172800){
 		//echo "CITY: ".$cities_list['China'][$i];
 
 	
-		$city_name_search = $_POST['city'];
-		$country_s = "China";
-		$api_key = "01156208e1bd1e99995d141ee0b8f7f0";
-
+	$city_name_search = $_POST['city'];
+	$api_key = "01156208e1bd1e99995d141ee0b8f7f0";
+	$lon = 23.32;
+	$lat = 42.7;
 		//for search use this: $jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$city_name_search."&APPID=".$api_key);
 
 
-		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$cities_list[$country_s][$i]."&APPID=".$api_key);
+		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/find?lat=".$lat."&lon=".$lon."&cnt=50&units=metric&appid=".$api_key);
 		$data = json_decode($jsondata, true);
-
-		$id = $data['id'];
-		$city = $data['name'];
-		$country = $data['sys']['country'];
-		$coord_lon = $data['coord']['lon'];
-		$coord_lat = $data['coord']['lat'];
-		$weather_id = $data['weather'][0]['id'];
-		$weather_main = $data['weather'][0]['main'];
-		$weather_description = $data['weather'][0]['description'];
-		$main_temp = (($data['main']['temp'] - 32) * (5/9));
-		$main_temp_min = (($data['main']['temp_min'] - 32) * (5/9));
-		$main_temp_max = (($data['main']['temp_max'] - 32) * (5/9));
-		$main_pressure = $data['main']['pressure'];
-		$wind_speed = $data['wind']['speed'];
+	$i = 0;
+	while($i<50){	
+		$id = $data['list'][$i]['id'];
+		$city = $data['list'][$i]['name'];
+		$country = $data['list'][$i]['sys']['country'];
+		$coord_lon = $data['list'][$i]['coord']['lon'];
+		$coord_lat = $data['list'][$i]['coord']['lat'];
+		$weather_id = $data['list'][$i]['weather'][0]['id'];
+		$weather_main = $data['list'][$i]['weather'][0]['main'];
+		$weather_description = $data['list'][$i]['weather'][0]['description'];
+		$main_temp = $data['main']['temp'];
+		$main_temp_min = $data['list'][$i]['main']['temp_min'];
+		$main_temp_max = $data['list'][$i]['main']['temp_max'];
+		$main_pressure = $data['list'][$i]['main']['pressure'];
+		$wind_speed = $data['list'][$i]['wind']['speed'];
 		$wind_deg = $data['wind']['deg'];
-		$clouds_all = $data['clouds']['all'];
+		$clouds_all = $data['list'][$i]['clouds']['all'];
 
 	
 	
