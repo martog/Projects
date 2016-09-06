@@ -11,20 +11,23 @@
 	$country = $_POST['country'];
 	$min_temp = $_POST['min_temp'];	
 	$max_temp = $_POST['max_temp'];
+	
+	//$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
 
 	if(!empty($min_temp) && !empty($max_temp)){
-		echo "weather:".$min_temp, $max_temp;	
+		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");	
+	}else if(!empty($city)){
+		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE city = '$city'");	
+	}else if(!empty($country)){
+		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE country = '$country'");	
 	}else{
-		echo "weather:empty";
+		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
 	}
 
-	if(!empty($city)){
-		echo "city:".$city;	
-	}else{
-		echo "city:empty";
-	}
+	
 
-	$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
+	
+	
 
 	//echo $place_coord;
 
@@ -78,7 +81,7 @@
 
 			<div id = "country" style ="display:none;">
 				<form action = "map.php" method = "POST">
-					<input type = "text" placeholder = "Country name" name = "country">
+					<input type = "text" max length = "2" placeholder = "Country name" name = "country">
 					<input type = "submit" value = "Filter">
 				</form>
 			</div>
