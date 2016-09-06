@@ -6,7 +6,26 @@
 	
 	//FILTER example: $place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE country = 'TW'");
 
+
+	$city = $_POST['city'];
+	$country = $_POST['country'];
+	$min_temp = $_POST['min_temp'];	
+	$max_temp = $_POST['max_temp'];
+
+	if(!empty($min_temp) && !empty($max_temp)){
+		echo "weather:".$min_temp, $max_temp;	
+	}else{
+		echo "weather:empty";
+	}
+
+	if(!empty($city)){
+		echo "city:".$city;	
+	}else{
+		echo "city:empty";
+	}
+
 	$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
+
 	//echo $place_coord;
 
 	$points_list = array();
@@ -14,6 +33,7 @@
 		//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |";
 		$points_list[] = array($row['coord_lat'],$row['coord_lon']);
 	}
+
 	//echo json_encode($points_list);
 ?>
 
@@ -36,6 +56,54 @@
 	</head>
 
 	<body>
+		<div id = "filter">
+			<button onclick = "country_show()">Country</button>
+			<button onclick = "city_show()">City</button>
+			<button onclick = "weather_show()">Weather</button>
+		
+			<div id = "weather" style ="display:none;">
+				<form action = "map.php" method = "POST">
+					<input type = "number" placeholder = "Min temp" name = "min_temp">
+					<input type = "number" placeholder = "Max temp" name = "max_temp">
+					<input type = "submit" value = "Filter">
+				</form>
+			</div>
+
+			<div id = "city" style ="display:none;">
+				<form action = "map.php" method = "POST">
+					<input type = "text" placeholder = "City name" name = "city">
+					<input type = "submit" value = "Filter">
+				</form>
+			</div>
+
+			<div id = "country" style ="display:none;">
+				<form action = "map.php" method = "POST">
+					<input type = "text" placeholder = "Country name" name = "country">
+					<input type = "submit" value = "Filter">
+				</form>
+			</div>
+		</div>
+
+		<script>
+			function country_show(){
+				document.getElementById('country').style.display = "block";
+				document.getElementById('city').style.display = "none";
+				document.getElementById('weather').style.display = "none";
+			}
+
+			function city_show(){
+				document.getElementById('city').style.display = "block";
+				document.getElementById('weather').style.display = "none";
+				document.getElementById('country').style.display = "none";
+			}
+
+			function weather_show(){
+				document.getElementById('weather').style.display = "block";
+				document.getElementById('city').style.display = "none";
+				document.getElementById('country').style.display = "none";
+			}
+		</script>
+		
 		<div id="map"></div>
 
 		<script>
