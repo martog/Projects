@@ -1,11 +1,6 @@
 <?php
 	$con = mysql_connect("localhost", "root", "admin") or die(mysql_error());
 	mysql_select_db("weather",$con);
-
-	//$i = 2172797;
-	//while($i<=2172800){
-		//echo "CITY: ".$cities_list['China'][$i];
-
 	
 	$city_name_search = $_POST['city'];
 	$api_key = "01156208e1bd1e99995d141ee0b8f7f0";
@@ -15,8 +10,7 @@
 
 
 	$i = 0;
-	//$ll_i = 0;
-	//while(ll_i < 2){
+	while($lat > 39.0){
 		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/find?lat=".$lat."&lon=".$lon."&cnt=50&units=metric&appid=".$api_key);
 		$data = json_decode($jsondata, true);
 
@@ -50,11 +44,11 @@
 			$i++;
 		}
 		
-		//$i = 0;
+		$i = 0;
 		//$lon++;
-		//$lat++;
+		$lat--;
 		//$ll_i++;
-	//}
+	}
 	
 ?>
 
