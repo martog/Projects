@@ -64,18 +64,17 @@
 	</head>
 
 	<body>
-		<div class="dropdown">  			
-			<button class="dropbtn">Country</button><br>
-			<div class="dropdown-content">
-	   			<?php 
-					$cities_query = mysql_query("SELECT DISTINCT city FROM data");
-					while($c_row = mysql_fetch_array($cities_query)){	
-						echo"<a href = '#'>".$c_row['city']."<a><br>";
-					}
-				?>
-			</div>
-			<button onclick = "city_show()">City</button></br>
-			<button onclick = "weather_show()">Weather</button>
+		<div id = "filter">  			
+				<select>
+					<option value = "Country">Country</option>
+		   			<?php 
+						$countries_query = mysql_query("SELECT DISTINCT country FROM data");
+						while($c_row = mysql_fetch_array($countries_query)){	
+							echo"<option value='".$c_row['country']."'>".$c_row['country']."</option>";
+						}
+					?>
+				</select>
+			
 		
 			<div id = "weather" style ="display:none;">
 				<form action = "map.php" method = "POST">
