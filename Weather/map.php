@@ -11,6 +11,11 @@
 	$country = $_POST['country'];
 	$min_temp = $_POST['min_temp'];	
 	$max_temp = $_POST['max_temp'];
+
+	
+	
+	//$db_cities_count = count($db_cities);
+	
 	
 	//$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
 
@@ -37,7 +42,6 @@
 		$points_list[] = array($row['coord_lat'],$row['coord_lon']);
 	}
 
-	//echo json_encode($points_list);
 ?>
 
 <html>
@@ -45,6 +49,7 @@
 		<title> Map </title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="mstyle.css ">
 		<style>
 			html, body {
 				height: 100%;
@@ -59,9 +64,17 @@
 	</head>
 
 	<body>
-		<div id = "filter">
-			<button onclick = "country_show()">Country</button>
-			<button onclick = "city_show()">City</button>
+		<div class="dropdown">  			
+			<button class="dropbtn">Country</button><br>
+			<div class="dropdown-content">
+	   			<?php 
+					$cities_query = mysql_query("SELECT DISTINCT city FROM data");
+					while($c_row = mysql_fetch_array($cities_query)){	
+						echo"<a href = '#'>".$c_row['city']."<a><br>";
+					}
+				?>
+			</div>
+			<button onclick = "city_show()">City</button></br>
 			<button onclick = "weather_show()">Weather</button>
 		
 			<div id = "weather" style ="display:none;">
