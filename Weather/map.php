@@ -81,7 +81,7 @@
 
 			<div id = "country" style ="display:none;">
 				<form action = "map.php" method = "POST">
-					<input type = "text" max length = "2" placeholder = "Country name" name = "country">
+					<input type = "text" maxlength = "2" placeholder = "Country name" name = "country">
 					<input type = "submit" value = "Filter">
 				</form>
 			</div>
