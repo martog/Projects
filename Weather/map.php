@@ -53,7 +53,7 @@
 	<body>
 		<div id = "filter">  
 <!-- COUNTRY SELECT -->	
-				<select name = "country" id = "country-list" onchange="getCountry(this.value)">
+				<select name = "country" id = "country-list" onchange="self.location=self.location+'?country='+this.options[this.selectedIndex].value">
 					<option value = "Country">Country</option>
 		   			<?php 
 							$countries_query = mysql_query("SELECT DISTINCT country FROM data");
@@ -62,46 +62,37 @@
 							}
 						?>
 				</select>
-				<script>
-				function getCountry(val) {
-					$.ajax({
-						type: "POST",
-						url: "map.php",
-						data:{cnt:val},
-						success: function(data){
-							//window.alert(data);
-							$('#city_select').html(data).find('#country-list').remove();
-						}
-					});
-				}
-				</script>
 <!-- COUNTRY SELECT END-->
 
 <!-- CITY SELECT -->
 			<div id = "city_select">
-				<select name = "city" id = "city-list" onchange = "self.location=self.location+'?city='+this.options[this.selectedIndex].value">
+				<select name = "city" id = "city-list" onchange = "self.location=self.location+'&city='+this.options[this.selectedIndex].value">
 					<option value = "City">City</option>
 					<?php
-						if(!empty($_POST['cnt'])) {
-							$country = $_POST['cnt'];
+						if(!empty($_GET['country'])) {
+							$country = $_GET['country'];
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data WHERE country = '$country'");
 							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE country = '$country'");
 						}else{
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data");
+							if(!empty($_GET['city'])){
+								$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
+								echo "<script>self.location=self.location+'?city=".$_GET['city']."</script>";				
+							}
+								
 						}
 						
 						while($ct_row = mysql_fetch_array($cities_query)){	
 								echo"<option value='".$ct_row['city']."'>".$ct_row['city']."</option>";
 						}
 
+						if(!empty($_GET['city'])){
+							$city = $_GET['city'];
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city' AND country = '$country'");
+						}
+
 					?>
 				</select>
-				<?php
-					if(!empty($_GET['city'])){
-						$city = $_GET['city'];
-						$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
-					}
-				?>
 			</div>
 <!-- CITY SELECT -->
 	
