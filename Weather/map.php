@@ -53,7 +53,7 @@
 	<body>
 		<div id = "filter">  
 <!-- COUNTRY SELECT -->	
-				<select name = "country" id = "country-list" onchange="getCity(this.value)">
+				<select name = "country" id = "country-list" onchange="getCountry(this.value)">
 					<option value = "Country">Country</option>
 		   			<?php 
 							$countries_query = mysql_query("SELECT DISTINCT country FROM data");
@@ -63,13 +63,13 @@
 						?>
 				</select>
 				<script>
-				function getCity(val) {
+				function getCountry(val) {
 					$.ajax({
 						type: "POST",
 						url: "map.php",
 						data:{cnt:val},
 						success: function(data){
-							window.alert(data);
+							//window.alert(data);
 							$('#city_select').html(data).find('#country-list').remove();
 						}
 					});
@@ -79,7 +79,7 @@
 
 <!-- CITY SELECT -->
 			<div id = "city_select">
-				<select name = "city" id = "city-list">
+				<select name = "city" id = "city-list" onchange = "self.location=self.location+'?city='+this.options[this.selectedIndex].value">
 					<option value = "City">City</option>
 					<?php
 						if(!empty($_POST['cnt'])) {
@@ -96,7 +96,15 @@
 
 					?>
 				</select>
+				<?php
+					if(!empty($_GET['city'])){
+						$city = $_GET['city'];
+						$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
+					}
+				?>
 			</div>
+<!-- CITY SELECT -->
+	
 			
 		
 			<div id = "weather" style ="display:none;">
