@@ -137,14 +137,36 @@
 				<form action = "map.php" method = "GET">
 					<input type = "number" placeholder = "Min temp" name = "min_temp">
 					<input type = "number" placeholder = "Max temp" name = "max_temp">
-					<input type = "submit" value = "Filter" onclick ="self.location=self.location+'?min_temp='+min_temp+'&max_temp='+max_temp">
+					<input type = "hidden" value = "<?php if(!empty($_GET['country'])){echo $country;}?>" name = "country" >
+					<input type = "hidden" value = "<?php if(!empty($_GET['city'])){echo $city;}?>" name = "city" >
+					<input type = "submit" value = "Filter">
 				</form>
 			</div>
 			<?php
 				if(!empty($_GET['min_temp']) && !empty($_GET['min_temp'])){
 					$min_temp = $_GET['min_temp'];
-					$max_temp = $_GET['max_temp'];		
-					$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");
+					$max_temp = $_GET['max_temp'];
+
+					if(!empty($_GET['country'])){
+						$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country'");
+						if(!empty($_GET['city'])){
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country' AND city = '$city'");
+						}
+							
+						//echo "country set";
+					}else{	
+						if(!empty($_GET['city'])){
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND city = '$city'");
+							//echo "city set";
+						}else{
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");
+						}
+						//echo "country not set";
+							
+					}
+	
+
+			
 				}	
 			?>
 <!-- WEATHER END -->
