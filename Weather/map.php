@@ -70,13 +70,14 @@
 							 }
 							 return false;
 						});
+		
 					 });
 				</script>
 <!-- COUNTRY SELECT END-->
 
 <!-- CITY SELECT -->
 			<div id = "city_select">
-				<select name = "city" id = "city-list" onchange = "self.location=self.location+'&city='+this.options[this.selectedIndex].value">
+				<select name = "city" id = "city-list" >
 					<option value = "City">City</option>
 					<?php
 						if(!empty($_GET['country'])) {
@@ -85,10 +86,6 @@
 							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE country = '$country'");
 						}else{
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data");
-							if(!empty($_GET['city'])){
-								echo "<script>self.location=self.location+'?city=".$_GET['city']."</script>";
-								$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");				
-							}
 								
 						}
 						
@@ -96,13 +93,41 @@
 								echo"<option value='".$ct_row['city']."'>".$ct_row['city']."</option>";
 						}
 
-						if(!empty($_GET['city'])){
-							$city = $_GET['city'];
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city' AND country = '$country'");
-						}
 
 					?>
 				</select>
+				<script>
+					 $(function(){
+						// bind change event to select
+						$('#city-list').on('change', function () {
+							var url = window.location.href;
+							if(url.indexOf('?') > -1){
+									url = url + "&city=" +$(this).val();
+									//window.alert("true: " + url);
+							}else{
+									url = url + "?city=" +$(this).val();
+									//window.alert("false: " + url);
+							}
+							if (url) { // require a URL
+								 window.location = url; // redirect
+							}
+							return false;
+						});
+		
+					});
+				</script>
+			<?php
+					if(!empty($_GET['city'])){
+						$city = $_GET['city'];
+						if(!empty($_GET['country'])){
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city' AND country = '$country'");
+							//echo"country and city: ";
+						}else{
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
+							//echo"city: ".$city;
+						}
+				}
+			?>
 			</div>
 <!-- CITY SELECT END-->
 <!-- WEATHER -->
