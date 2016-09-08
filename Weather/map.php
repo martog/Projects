@@ -9,8 +9,6 @@
 
 	//$city = $_POST['city'];
 	//$country = $_POST['country'];
-	$min_temp = $_POST['min_temp'];	
-	$max_temp = $_POST['max_temp'];
 	
 	
 	$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data");
@@ -53,7 +51,7 @@
 	<body>
 		<div id = "filter">  
 <!-- COUNTRY SELECT -->	
-				<select name = "country" id = "country-list" onchange="self.location=self.location+'?country='+this.options[this.selectedIndex].value">
+				<select name = "country" id = "country-list">
 					<option value = "Country">Country</option>
 		   			<?php 
 							$countries_query = mysql_query("SELECT DISTINCT country FROM data");
@@ -62,6 +60,18 @@
 							}
 						?>
 				</select>
+				<script>
+					 $(function(){
+						// bind change event to select
+						$('#country-list').on('change', function () {
+							 var url = "?country=" +$(this).val(); // get selected value
+							 if (url) { // require a URL
+								  window.location = url; // redirect
+							 }
+							 return false;
+						});
+					 });
+				</script>
 <!-- COUNTRY SELECT END-->
 
 <!-- CITY SELECT -->
@@ -76,8 +86,8 @@
 						}else{
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data");
 							if(!empty($_GET['city'])){
-								$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
-								echo "<script>self.location=self.location+'?city=".$_GET['city']."</script>";				
+								echo "<script>self.location=self.location+'?city=".$_GET['city']."</script>";
+								$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");				
 							}
 								
 						}
@@ -94,53 +104,29 @@
 					?>
 				</select>
 			</div>
-<!-- CITY SELECT -->
-	
+<!-- CITY SELECT END-->
+<!-- WEATHER -->
 			
 		
-			<div id = "weather" style ="display:none;">
-				<form action = "map.php" method = "POST">
+			<div id = "weather" style ="display:block;">
+				<form action = "map.php" method = "GET">
 					<input type = "number" placeholder = "Min temp" name = "min_temp">
 					<input type = "number" placeholder = "Max temp" name = "max_temp">
-					<input type = "submit" value = "Filter">
+					<input type = "submit" value = "Filter" onclick ="self.location=self.location+'?min_temp='+min_temp+'&max_temp='+max_temp">
 				</form>
 			</div>
+			<?php
+				if(!empty($_GET['min_temp']) && !empty($_GET['min_temp'])){
+					$min_temp = $_GET['min_temp'];
+					$max_temp = $_GET['max_temp'];		
+					$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");
+				}	
+			?>
+<!-- WEATHER END -->
 
-			<div id = "city" style ="display:none;">
-				<form action = "map.php" method = "POST">
-					<input type = "text" placeholder = "City name" name = "city">
-					<input type = "submit" value = "Filter">
-				</form>
-			</div>
 
-			<div id = "country" style ="display:none;">
-				<form action = "map.php" method = "POST">
-					<input type = "text" maxlength = "2" placeholder = "Country name" name = "country">
-					<input type = "submit" value = "Filter">
-				</form>
-			</div>
-		</div>
-
-		<script>
-			function country_show(){
-				document.getElementById('country').style.display = "block";
-				document.getElementById('city').style.display = "none";
-				document.getElementById('weather').style.display = "none";
-			}
-
-			function city_show(){
-				document.getElementById('city').style.display = "block";
-				document.getElementById('weather').style.display = "none";
-				document.getElementById('country').style.display = "none";
-			}
-
-			function weather_show(){
-				document.getElementById('weather').style.display = "block";
-				document.getElementById('city').style.display = "none";
-				document.getElementById('country').style.display = "none";
-			}
-		</script>
 		<?php
+
 			$points_list = array();
 			while($row = mysql_fetch_array($place_coord)){	
 				//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |";
@@ -169,10 +155,18 @@
 					map: map,
 					title: 'Place'
 				});
+				var contentString = '<h3>INFO</h3>';
+				var infowindow = new google.maps.InfoWindow({
+          		content: contentString
+        		});
+				marker.addListener('click', function() {
+          			infowindow.open(map, marker);
+        		});
 				i++;
 				//window.alert(points_list[1][i][0]);
 			}
-      		}
+
+      }
     		</script>
 
     		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc&callback=initMap">
