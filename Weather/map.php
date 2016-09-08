@@ -149,7 +149,7 @@
 			?>
 <!-- WEATHER END -->
 
-
+<!-- FINAL POINT LIST -->	
 		<?php
 
 			$points_list = array();
@@ -158,9 +158,11 @@
 				$points_list[] = array($row['coord_lat'],$row['coord_lon']);
 			}
 		?>
-		
-		<div id="map"></div>
+<!-- FINAL POINT LIST END-->
 
+<!-- SHOW POINTS ON MAP-->
+		<div id="map"></div>
+	
 		<script>
 		function initMap() {
 			var myLatLng = {lat: 0.0, lng: 0.0};
@@ -193,6 +195,7 @@
 
       }
     		</script>
+<!-- SHOW POINTS ON MAP END-->
 
     		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc&callback=initMap">
 		//map_api_key = "AIzaSyCFr-f3l8dSUr3m37JWI42eEEDdxQirosc";
