@@ -9,12 +9,12 @@
 		//for search use this: $jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/weather?q=".$city_name_search."&APPID=".$api_key);
 
 
-	$i = 0;
+	$i = 1;
 	while($lat > 40.0){
-		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/find?lat=".$lat."&lon=".$lon."&cnt=50&units=metric&appid=".$api_key);
+		$jsondata = file_get_contents("http://api.openweathermap.org/data/2.5/find?lat=".$lat."&lon=".$lon."&cnt=20&units=metric&appid=".$api_key);
 		$data = json_decode($jsondata, true);
 
-		while($i<50){	
+		while($i<20){	
 			$id = $data['list'][$i]['id'];
 			$city = $data['list'][$i]['name'];
 			$country = $data['list'][$i]['sys']['country'];
