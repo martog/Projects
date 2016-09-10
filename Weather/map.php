@@ -12,18 +12,6 @@
 	
 	
 	$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data");
-
-	/*if(!empty($min_temp) && !empty($max_temp)){
-		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");	
-	}else if(!empty($city)){
-		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE city = '$city'");	
-	}else if(!empty($country)){
-		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data WHERE country = '$country'");	
-	}else{
-		$place_coord = mysql_query("SELECT coord_lon, coord_lat FROM data");
-	}*/
-
-	
 	//echo json_encode($points_list);
 
 ?>
@@ -35,6 +23,11 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="mstyle.css ">
 		<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+
+<!-- SELECT2 -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<!-- SELECT2  END-->
 		<style>
 			html, body {
 				height: 100%;
@@ -51,8 +44,8 @@
 	<body>
 		<div id = "filter">  
 <!-- COUNTRY SELECT -->	
-				<select name = "country" id = "country-list">
-					<option value = "Country">Country</option>
+				<select name = "country" id = "country-list" style = "min-width:180px;">
+					<option></option>
 		   			<?php 
 							$countries_query = mysql_query("SELECT DISTINCT country FROM data");
 							while($row = mysql_fetch_array($countries_query)){	
@@ -63,7 +56,7 @@
 				<script>
 					 $(function(){
 						// bind change event to select
-						$('#country-list').on('change', function () {
+						$('#country-list').select2({placeholder: "Select a country"}).on('change', function () {
 							 var url = "?country=" +$(this).val(); // get selected value
 							 if (url) { // require a URL
 								  window.location = url; // redirect
@@ -77,8 +70,8 @@
 
 <!-- CITY SELECT -->
 			<div id = "city_select">
-				<select name = "city" id = "city-list" >
-					<option value = "City">City</option>
+				<select name = "city" id = "city-list">
+					<option></option>
 					<?php
 						if(!empty($_GET['country'])) {
 							$country = $_GET['country'];
@@ -99,7 +92,7 @@
 				<script>
 					 $(function(){
 						// bind change event to select
-						$('#city-list').on('change', function () {
+						$('#city-list').select2({placeholder: "Select a city"}).on('change', function () {
 							var url = window.location.href;
 							if(url.indexOf('?') > -1){
 									url = url + "&city=" +$(this).val();
@@ -173,7 +166,6 @@
 
 <!-- FINAL POINT LIST -->	
 		<?php
-
 			$points_list = array();
 			while($row = mysql_fetch_array($place_coord)){	
 				//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |";
@@ -196,7 +188,6 @@
 			var points_list = [<?php echo json_encode($points_list);?>];
 			var i = 0, points_count = points_list[0].length;
 			window.alert(points_count);
-			
 	
 			while(i <= points_count){
 				var marker = new google.maps.Marker({
@@ -204,7 +195,7 @@
 					map: map,
 					title: 'Place'
 				});
-				var contentString = '<h3>INFO</h3>';
+			var contentString = '<h3>INFO:</h3>lat: ' + points_list[0][i][0] + ' lon: ' + points_list[0][i][1];
 				var infowindow = new google.maps.InfoWindow({
           		content: contentString
         		});
