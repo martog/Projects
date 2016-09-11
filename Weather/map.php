@@ -11,7 +11,7 @@
 	//$country = $_POST['country'];
 	
 	
-	$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data");
+	$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data");
 	//echo json_encode($points_list);
 
 ?>
@@ -76,7 +76,7 @@
 						if(!empty($_GET['country'])) {
 							$country = $_GET['country'];
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data WHERE country = '$country'");
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE country = '$country'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE country = '$country'");
 						}else{
 							$cities_query = mysql_query("SELECT DISTINCT city FROM data");
 								
@@ -113,10 +113,10 @@
 					if(!empty($_GET['city'])){
 						$city = $_GET['city'];
 						if(!empty($_GET['country'])){
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city' AND country = '$country'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE city = '$city' AND country = '$country'");
 							//echo"country and city: ";
 						}else{
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE city = '$city'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE city = '$city'");
 							//echo"city: ".$city;
 						}
 				}
@@ -141,18 +141,18 @@
 					$max_temp = $_GET['max_temp'];
 
 					if(!empty($_GET['country'])){
-						$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country'");
+						$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country'");
 						if(!empty($_GET['city'])){
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country' AND city = '$city'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND country = '$country' AND city = '$city'");
 						}
 							
 						//echo "country set";
 					}else{	
 						if(!empty($_GET['city'])){
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND city = '$city'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp' AND city = '$city'");
 							//echo "city set";
 						}else{
-							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");
+							$place_coord = mysql_query("SELECT DISTINCT coord_lon, coord_lat, city, weather_description, main_temp, wind_speed FROM data WHERE main_temp BETWEEN '$min_temp' AND '$max_temp'");
 						}
 						//echo "country not set";
 							
@@ -168,9 +168,10 @@
 		<?php
 			$points_list = array();
 			while($row = mysql_fetch_array($place_coord)){	
-				//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |";
-				$points_list[] = array($row['coord_lat'],$row['coord_lon']);
+				//echo" lat: ".$row['coord_lat']." | lon: ".$row['coord_lon']." |".$row['city'], $row['weather_description'], $row['main_temp']." |wndspd: ".$row['wind_speed'];
+				$points_list[] = array($row['coord_lat'],$row['coord_lon'], $row['city'], $row['weather_description'], $row['main_temp'], $row['wind_speed']);
 			}
+			//echo json_encode($points_list);
 		?>
 <!-- FINAL POINT LIST END-->
 
@@ -178,16 +179,23 @@
 		<div id="map"></div>
 	
 		<script>
+		var infowindow = null;
+		var points_list = [<?php echo json_encode($points_list);?>];
+		var contentString = JSON.parse(points_list);
 		function initMap() {
 			var myLatLng = {lat: 0.0, lng: 0.0};
 			var map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 3,
 				center: myLatLng
 			});
+		
+			infowindow = new google.maps.InfoWindow({
+          		content: contentString
+        		});
 
-			var points_list = [<?php echo json_encode($points_list);?>];
 			var i = 0, points_count = points_list[0].length;
 			window.alert(points_count);
+			window.alert(contentString);
 	
 			while(i <= points_count){
 				var marker = new google.maps.Marker({
@@ -195,16 +203,16 @@
 					map: map,
 					title: 'Place'
 				});
-			var contentString = '<h3>INFO:</h3>lat: ' + points_list[0][i][0] + ' lon: ' + points_list[0][i][1];
-				var infowindow = new google.maps.InfoWindow({
-          		content: contentString
-        		});
-				marker.addListener('click', function() {
-          			infowindow.open(map, marker);
-        		});
+				google.maps.event.addListener(marker, 'click', function () {
+					infowindow.setContent("asd");
+					//window.alert(contentString[);
+					infowindow.open(map, this);
+				});
+			
 				i++;
 				//window.alert(points_list[1][i][0]);
 			}
+
 
       }
     		</script>
