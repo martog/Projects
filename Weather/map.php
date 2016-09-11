@@ -181,7 +181,8 @@
 		<script>
 		var infowindow = null;
 		var points_list = [<?php echo json_encode($points_list);?>];
-		var contentString = JSON.parse(points_list);
+		var contentString = JSON.stringify(points_list[0]);
+		var obj = $.parseJSON(contentString);
 		function initMap() {
 			var myLatLng = {lat: 0.0, lng: 0.0};
 			var map = new google.maps.Map(document.getElementById('map'), {
@@ -195,7 +196,7 @@
 
 			var i = 0, points_count = points_list[0].length;
 			window.alert(points_count);
-			window.alert(contentString);
+			window.alert(obj[0]);
 	
 			while(i <= points_count){
 				var marker = new google.maps.Marker({
@@ -203,14 +204,17 @@
 					map: map,
 					title: 'Place'
 				});
-				google.maps.event.addListener(marker, 'click', function () {
-					infowindow.setContent("asd");
-					//window.alert(contentString[);
-					infowindow.open(map, this);
-				});
-			
+				var description = obj[i][2];
+				showInfoWindow(marker, map, infowindow, description);
 				i++;
 				//window.alert(points_list[1][i][0]);
+			}
+
+			function showInfoWindow(marker, map, infowindow, description){
+				marker.addListener('click', function() {
+				infowindow.setContent(description);
+				infowindow.open(map, this);
+    });
 			}
 
 
