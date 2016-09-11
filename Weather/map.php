@@ -35,7 +35,7 @@
 				padding: 0;
 			}
 			#map {
-				height: 100%;
+				height: 84%;
 			}
 		</style>
 
@@ -196,7 +196,7 @@
 
 			var i = 0, points_count = points_list[0].length;
 			window.alert(points_count);
-			window.alert(obj[0]);
+			//window.alert(obj[0]);
 	
 			while(i <= points_count){
 				var marker = new google.maps.Marker({
@@ -204,7 +204,7 @@
 					map: map,
 					title: 'Place'
 				});
-				var description = obj[i][2];
+				var description = "<font size = '3'><b>City: </b>" + obj[i][2] + "<br><b>Latitude: </b>" + obj[i][0] + "<br><b>Longitude: </b>" + obj[i][1] + "<br><b>Weather: </b>" + obj[i][3] + "<br><b>Temperature: </b>" + obj[i][4] + "°C <br><b>Wind speed: </b>" + obj[i][5] + "km/h</font>";
 				showInfoWindow(marker, map, infowindow, description);
 				i++;
 				//window.alert(points_list[1][i][0]);
