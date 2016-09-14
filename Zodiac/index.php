@@ -122,12 +122,17 @@
 				
 				while($row = mysql_fetch_array($dbs)){
 				$horoscope = $row['horoscope'];
-				$day = $row['day'];
-				if($day == 0){
+				$day = $row['date'];
+				$datetime = new DateTime('2016-09-14');
+				$today = $datetime->format('Y-m-d');
+				$tomorrow = $datetime->modify('+1 day')->format('Y-m-d');
+				$yesterday = $datetime->modify('-2 day')->format('Y-m-d');
+				
+				if($day == $yesterday){
 					echo "<h3>Yesterday</h3><h5>$horoscope</h5>";
-				}else if($day == 1){
+				}else if($day == $today){
 					echo "<h3>Today</h3><h5>$horoscope</h5>";
-				}else if($day == 2){
+				}else if($day == $tomorrow){
 					echo "<h3>Tomorrow</h3><h5>$horoscope</h5>";		
 				}
 		
