@@ -23,6 +23,7 @@ char* file_read(){
 
     //opens the file
     fp = fopen(filename, "r");
+
     if (fp == NULL){
         printf("Error\n");
         exit(EXIT_FAILURE);
@@ -31,38 +32,26 @@ char* file_read(){
     while (fgets(line_buff,file_status.st_size, fp)!=NULL){
         printf("%s", line_buff);
         strcat(file_buff, line_buff);
-    }
+     }
 
     free(line_buff);
     fclose(fp);
-   //exit(EXIT_SUCCESS);
     return file_buff;
     free(file_buff);
 }
-
-void sym_check(char *buff){
-    printf("\nsym check called...\n");
-    int buff_size = strlen(buff);
-    int counter = 0;
-    int new_lines = 0;
-
-    while(counter < buff_size){
-        //printf("%c", buff[counter]);
-        if(buff[counter] == '\n'){
-            //printf("//there is new line//");
-            new_lines++;
-        }
-        counter++;
+int operator_check(char *buff){
+    int operators = 0;
+    if((strstr(buff,"while") != NULL) || (strstr(buff,"for") != NULL) || (strstr(buff,"do") != NULL) ){
+        operators++;
     }
-    //printf("%s",buff);
-    //printf("\nsizeof_buff = %d\n", buff_size);
-    printf("\nnew_lines:%d\n",new_lines);
-
+    return operators;
 }
 
 int main(){
     char *result;
+    int operators;
     result = file_read();
-    sym_check(result);
+    operators = operator_check(result);
+    printf("\nIt has %d operators\n",operators);
     return 0;
 }
