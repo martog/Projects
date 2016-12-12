@@ -4,35 +4,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-int match(char *buff, char* word){
-    int j = 0;
-    int i,counter=0;
-
-    for(i = 0;i < strlen(buff);i++){
-        if(buff[i] == word[j]){
-            if(j == strlen(word)-1){
-                counter++;
-                j = 0;
-                continue;
-            }
-        }else{
-            j = 0;
-            continue;
-        }
-        j++;
-
-    }
-    //printf("%d the counter shows",counter);
-    return counter;
-}
-
-void operator_check(char *buff){
-    int result;
-    result = match(buff,"while");
-    printf("\nresult:%d\n",result);
-
-}
-
 char* file_read(){
     FILE *fp;
     char filename[] = "1.txt";
@@ -67,6 +38,35 @@ char* file_read(){
     fclose(fp);
     return file_buff;
     free(file_buff);
+}
+
+int find_match(char *buff, char* word){
+    int j = 0;
+    int i,counter=0;
+
+    for(i = 0;i < strlen(buff);i++){
+        if(buff[i] == word[j]){
+            if(j == strlen(word)-1){
+                counter++;
+                j = 0;
+                continue;
+            }
+        }else{
+            j = 0;
+            continue;
+        }
+        j++;
+
+    }
+    return counter;
+}
+
+void operator_check(char *buff){
+    int result;
+    result = find_match(buff,"while");
+    result+= find_match(buff,"for");
+    printf("\nresult:%d\n",result);
+
 }
 
 int main(){
