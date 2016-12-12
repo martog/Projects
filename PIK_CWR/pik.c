@@ -4,6 +4,27 @@
 #include <string.h>
 #include <sys/stat.h>
 
+int operators = 0;
+int flag = 0;
+
+int operator_check(char *buff){
+    if(strstr(buff,"do") != NULL){
+        flag = 1;
+        return 1;
+    }else if(strstr(buff,"for") != NULL){
+        return 1;
+    }else if(strstr(buff,"while") != NULL){
+        if(flag == 1){
+            return 0;
+            flag = 0;
+        }else{
+            return 1;
+        }
+    }else {
+        return 0;
+    }
+}
+
 char* file_read(){
     FILE *fp;
     char filename[] = "1.txt";
@@ -31,6 +52,9 @@ char* file_read(){
 
     while (fgets(line_buff,file_status.st_size, fp)!=NULL){
         printf("%s", line_buff);
+        if(operator_check(line_buff) == 1){
+            operators++;
+        }
         strcat(file_buff, line_buff);
      }
 
@@ -39,19 +63,10 @@ char* file_read(){
     return file_buff;
     free(file_buff);
 }
-int operator_check(char *buff){
-    int operators = 0;
-    if((strstr(buff,"while") != NULL) || (strstr(buff,"for") != NULL) || (strstr(buff,"do") != NULL) ){
-        operators++;
-    }
-    return operators;
-}
 
 int main(){
     char *result;
-    int operators;
     result = file_read();
-    operators = operator_check(result);
     printf("\nIt has %d operators\n",operators);
     return 0;
 }
