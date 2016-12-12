@@ -55,6 +55,7 @@ int find_match(char *buff, char* word){
             j = 0;
             continue;
         }
+        //printf("\nj = %d",j);
         j++;
 
     }
