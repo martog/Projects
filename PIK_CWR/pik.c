@@ -15,8 +15,8 @@ int operator_check(char *buff){
         return 1;
     }else if(strstr(buff,"while") != NULL){
         if(flag == 1){
-            return 0;
             flag = 0;
+            return 0;
         }else{
             return 1;
         }
