@@ -4,25 +4,33 @@
 #include <string.h>
 #include <sys/stat.h>
 
-int operators = 0;
-int flag = 0;
+int match(char *buff, char* word){
+    int j = 0;
+    int i,counter=0;
 
-int operator_check(char *buff){
-    if(strstr(buff,"do") != NULL){
-        flag = 1;
-        return 1;
-    }else if(strstr(buff,"for") != NULL){
-        return 1;
-    }else if(strstr(buff,"while") != NULL){
-        if(flag == 1){
-            flag = 0;
-            return 0;
+    for(i = 0;i < strlen(buff);i++){
+        if(buff[i] == word[j]){
+            if(j == strlen(word)-1){
+                counter++;
+                j = 0;
+                continue;
+            }
         }else{
-            return 1;
+            j = 0;
+            continue;
         }
-    }else {
-        return 0;
+        j++;
+
     }
+    //printf("%d the counter shows",counter);
+    return counter;
+}
+
+void operator_check(char *buff){
+    int result;
+    result = match(buff,"while");
+    printf("\nresult:%d\n",result);
+
 }
 
 char* file_read(){
@@ -52,9 +60,6 @@ char* file_read(){
 
     while (fgets(line_buff,file_status.st_size, fp)!=NULL){
         printf("%s", line_buff);
-        if(operator_check(line_buff) == 1){
-            operators++;
-        }
         strcat(file_buff, line_buff);
      }
 
@@ -67,6 +72,6 @@ char* file_read(){
 int main(){
     char *result;
     result = file_read();
-    printf("\nIt has %d operators\n",operators);
+    operator_check(result);
     return 0;
 }
