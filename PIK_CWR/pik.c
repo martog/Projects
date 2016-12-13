@@ -5,22 +5,52 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void write_to_file(char* text, int operators){
+int menu();
+char* file_read(char *filename);
+void write_to_file(char* text, int operators);
+int find_match(char *buff, char* word);
+int operator_check(char *buff);
+
+
+int main(){
+    char *result;
     char filename[30];
+    int option;
+    int op;
 
-    printf("Write the name of the output program:\n");
-    scanf("%s",&filename);
-    strcat(filename,".c");
+    option = menu();
 
-    FILE *fp = fopen(filename, "w");
-    if (fp == NULL)
-    {
-        printf("Error opening file!\n");
-        exit(1);
+    switch(option){
+        case 1:
+            printf("Write the name of the program:\n");
+            scanf("%s",&filename);
+            if(access(filename, F_OK ) != -1){
+                result = file_read(filename);
+                write_to_file("",operator_check(result));
+            }else{
+                printf("File not found!\n");
+            }
+        break;
+        case 2:
+            printf("Write the name of the program:\n");
+            scanf("%s",&filename);
+            if(access(filename, F_OK ) != -1){
+                result = file_read(filename);
+                operator_check(result);
+            }else{
+                printf("File not found!\n");
+            }
+
+        break;
+        case 3:
+            printf("3 selected\n");
+        break;
+        case 4:
+            printf("4 selected\n");
+        break;
+
     }
-
-    fprintf(fp, "Operators found: %d\nText:%s\n", operators, text);
-    fclose(fp);
+    return 0;
 }
 
 int menu(){
@@ -76,6 +106,24 @@ char* file_read(char *filename){
     free(file_buff);
 }
 
+void write_to_file(char* text, int operators){
+    char filename[30];
+
+    printf("Write the name of the output program:\n");
+    scanf("%s",&filename);
+    strcat(filename,".c");
+
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    fprintf(fp, "Operators found: %d\nText:%s\n", operators, text);
+    fclose(fp);
+}
+
 int find_match(char *buff, char* word){
     int j = 0;
     int i,counter=0;
@@ -104,45 +152,4 @@ int operator_check(char *buff){
     result+= find_match(buff,"for");
     return result;
 
-}
-
-int main(){
-    char *result;
-    char filename[30];
-    int option;
-    int op;
-
-    option = menu();
-
-    switch(option){
-        case 1:
-            printf("Write the name of the program:\n");
-            scanf("%s",&filename);
-            if(access(filename, F_OK ) != -1){
-                result = file_read(filename);
-                write_to_file("",operator_check(result));
-            }else{
-                printf("File not found!\n");
-            }
-        break;
-        case 2:
-            printf("Write the name of the program:\n");
-            scanf("%s",&filename);
-            if(access(filename, F_OK ) != -1){
-                result = file_read(filename);
-                operator_check(result);
-            }else{
-                printf("File not found!\n");
-            }
-
-        break;
-        case 3:
-            printf("3 selected\n");
-        break;
-        case 4:
-            printf("4 selected\n");
-        break;
-
-    }
-    return 0;
 }
