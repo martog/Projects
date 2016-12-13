@@ -3,10 +3,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
-char* file_read(){
+int menu(){
+    int option;
+
+    printf("1. Read from file and save to file\n");
+    printf("2. Read from file and print the result\n");
+    printf("3. Read from console and save to file\n");
+    printf("4. Read from console and print the result\n");
+    printf("Select option and click enter:\n");
+   // menu:
+    scanf("%d", &option);
+    if(option >= 1 && option <= 4){
+        return option;
+    }else{
+        printf("You should select option between 1 and 4:\n");
+       // goto menu;
+    }
+}
+
+char* file_read(char *filename){
     FILE *fp;
-    char filename[] = "1.txt";
     struct stat file_status;
     char *line_buff = NULL;
     char *file_buff = NULL;
@@ -26,11 +44,11 @@ char* file_read(){
 
     if (fp == NULL){
         printf("Error\n");
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
     }
 
     while (fgets(line_buff,file_status.st_size, fp)!=NULL){
-        printf("%s", line_buff);
+        //printf("%s", line_buff);
         strcat(file_buff, line_buff);
      }
 
@@ -72,7 +90,33 @@ void operator_check(char *buff){
 
 int main(){
     char *result;
-    result = file_read();
-    operator_check(result);
+    char filename[30];
+    int option;
+
+    option = menu();
+
+    switch(option){
+        case 1:
+            printf("1 selected\n");
+        break;
+        case 2:
+            printf("Write the name of the program:\n");
+            scanf("%s",&filename);
+            if(access(filename, F_OK ) != -1){
+                result = file_read(filename);
+                operator_check(result);
+            }else{
+                printf("File not found!\n");
+            }
+
+        break;
+        case 3:
+            printf("3 selected\n");
+        break;
+        case 4:
+            printf("4 selected\n");
+        break;
+
+    }
     return 0;
 }
