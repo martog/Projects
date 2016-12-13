@@ -5,13 +5,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+//-------functions--------//
 int menu();
 char* file_read(char *filename);
+void console_read();
 void write_to_file(char* text, int operators);
 int find_match(char *buff, char* word);
 int operator_check(char *buff);
+//-------functions--------//
 
-
+//----------main---------//
 int main(){
     char *result;
     char filename[30];
@@ -44,6 +47,7 @@ int main(){
         break;
         case 3:
             printf("3 selected\n");
+            console_read();
         break;
         case 4:
             printf("4 selected\n");
@@ -52,6 +56,7 @@ int main(){
     }
     return 0;
 }
+//----------main---------//
 
 int menu(){
     int option;
@@ -151,5 +156,9 @@ int operator_check(char *buff){
     result = find_match(buff,"while");
     result+= find_match(buff,"for");
     return result;
+
+}
+
+void console_read(){
 
 }
