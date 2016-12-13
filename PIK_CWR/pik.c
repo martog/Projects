@@ -5,6 +5,24 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+void write_to_file(char* text, int operators){
+    char filename[30];
+
+    printf("Write the name of the output program:\n");
+    scanf("%s",&filename);
+    strcat(filename,".c");
+
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    fprintf(fp, "Operators found: %d\nText:%s\n", operators, text);
+    fclose(fp);
+}
+
 int menu(){
     int option;
 
@@ -80,11 +98,11 @@ int find_match(char *buff, char* word){
     return counter;
 }
 
-void operator_check(char *buff){
+int operator_check(char *buff){
     int result;
     result = find_match(buff,"while");
     result+= find_match(buff,"for");
-    printf("\nresult:%d\n",result);
+    return result;
 
 }
 
@@ -92,12 +110,20 @@ int main(){
     char *result;
     char filename[30];
     int option;
+    int op;
 
     option = menu();
 
     switch(option){
         case 1:
-            printf("1 selected\n");
+            printf("Write the name of the program:\n");
+            scanf("%s",&filename);
+            if(access(filename, F_OK ) != -1){
+                result = file_read(filename);
+                write_to_file("",operator_check(result));
+            }else{
+                printf("File not found!\n");
+            }
         break;
         case 2:
             printf("Write the name of the program:\n");
