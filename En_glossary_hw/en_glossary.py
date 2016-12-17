@@ -15,7 +15,7 @@ def grab_info(term):
 
 	try:
 		definition = html.find('div',{'id':'definition'}).getText()
-		definition = re.match(r'(?:[^.:;]+[.:;]){5}', definition).group()
+		definition = re.match(r'(?:[^.:;]+[.:;]){4}', definition).group()
 	except AttributeError:
 		definition = html.find('div',{'id':'definition'}).getText()
 
@@ -35,27 +35,33 @@ def generate_url(alpha):
 words = []
 i = ord('a')
 print("working...")
+#getting all words
 while i <= ord('z'):
 	words.extend(generate_url(chr(i)))
 	i+=1
-
 random.shuffle(words)
+
 i = 0
 b = 0;
+#add definitions to doc
+document = Document()
 while i < 60:
 	#print(i+1)
 	#print(words[i])
 	result = grab_info(words[i])
 	if result != None: 
+		document.add_heading(str(b+1) + ". " + result[0])
+		p = document.add_paragraph(result[1])
 		#print(result[0],result[1])
 		#print("\n")
 		b+=1
 	if b == 50:
 		break
-	else:
-		print("Less than 50 definitions!!!")
-		print(b)
-		break
 	i+=1
 
-print(b)
+if b < 50:
+	print("Less than 50 definitions!!!")
+	print(b)
+
+document.save('demo.docx')
+print("Done!")
