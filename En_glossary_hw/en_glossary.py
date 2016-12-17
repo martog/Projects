@@ -6,6 +6,10 @@ import random
 
 def grab_info(term):
 	url = "http://pc.net/glossary/definition/" + term
+	try:
+		html = urllib.request.urlopen(url)
+	except urllib.error.HTTPError:
+		return None
 	html = BeautifulSoup(urllib.request.urlopen(url).read(), 'html.parser')
 	word = html.find('h2').getText()
 
@@ -37,10 +41,21 @@ while i <= ord('z'):
 
 random.shuffle(words)
 i = 0
-while i < 50:
-	print(i+1)
-	print(words[i])
+b = 0;
+while i < 60:
+	#print(i+1)
+	#print(words[i])
 	result = grab_info(words[i])
-	print(result[0],result[1])
-	print("\n")
+	if result != None: 
+		#print(result[0],result[1])
+		#print("\n")
+		b+=1
+	if b == 50:
+		break
+	else:
+		print("Less than 50 definitions!!!")
+		print(b)
+		break
 	i+=1
+
+print(b)
