@@ -8,7 +8,7 @@
 //-------functions--------//
 int menu();
 char* file_read(char *filename);
-void console_read();
+char* console_read();
 void write_to_file(char* text, int operators);
 int find_match(char *buff, char* word);
 int operator_check(char *buff);
@@ -19,13 +19,12 @@ int main(){
     char *result;
     char filename[30];
     int option;
-    int op;
 
     option = menu();
 
     switch(option){
         case 1:
-            printf("Write the name of the program:\n");
+            printf("Write the name of the input program:\n");
             scanf("%s",&filename);
             if(access(filename, F_OK ) != -1){
                 result = file_read(filename);
@@ -39,18 +38,21 @@ int main(){
             scanf("%s",&filename);
             if(access(filename, F_OK ) != -1){
                 result = file_read(filename);
-                operator_check(result);
+                printf("Operators found: %d\n",operator_check(result));
             }else{
                 printf("File not found!\n");
             }
 
         break;
         case 3:
-            printf("3 selected\n");
-            console_read();
+            result = console_read();
+            operator_check(result);
+           // printf("u entered: %s\n", result);
+            write_to_file("",operator_check(result));
         break;
         case 4:
-            printf("4 selected\n");
+            result = console_read();
+            printf("Operators found: %d\n",operator_check(result));
         break;
 
     }
@@ -116,7 +118,7 @@ void write_to_file(char* text, int operators){
 
     printf("Write the name of the output program:\n");
     scanf("%s",&filename);
-    strcat(filename,".c");
+    //strcat(filename,".c");
 
     FILE *fp = fopen(filename, "w");
     if (fp == NULL)
@@ -159,6 +161,23 @@ int operator_check(char *buff){
 
 }
 
-void console_read(){
+char* console_read(){
+    int i = 0;
+    char c, *input;
+    input = malloc(512 * sizeof(char *));
+    if(input != NULL){
+        while((c = getchar()) != EOF) {
+            input[i++] = c;
+            if (i >= 512){
+              input = realloc(input, 1024 * sizeof(char *));
+            }
+        }
+    }else{
+        printf("ERROR!\n");
+    }
 
+
+    input[i] = '\0';
+    return input;
 }
+
