@@ -134,21 +134,35 @@ void write_to_file(int operators, int sym_in_com){
 
 int find_match(char *buff, char* word){
     int j = 0;
-    int i,counter=0;
+    int i,counter = 0, ml_comment_flag = 0, sl_comment_flag = 0;
 
     for(i = 0;i < strlen(buff);i++){
-        if(buff[i] == word[j]){
-            if(j == strlen(word)-1){
-                counter++;
+        if(buff[i] == '/' && buff[i+1] == '*'){
+            ml_comment_flag = 1;
+        }
+        if(ml_comment_flag == 1 && buff[i] == '*' && buff[i+1] == '/'){
+            ml_comment_flag = 0;
+        }
+        if(buff[i] == '/' && buff[i+1] == '/'){
+            sl_comment_flag = 1;
+        }
+        if(sl_comment_flag == 1 && buff[i] == '\n'){
+            sl_comment_flag = 0;
+        }
+        if(sl_comment_flag == 0 && ml_comment_flag == 0){
+            if(buff[i] == word[j]){
+                if(j == strlen(word)-1){
+                    counter++;
+                    j = 0;
+                    continue;
+                }
+            }else{
                 j = 0;
                 continue;
             }
-        }else{
-            j = 0;
-            continue;
-        }
         //printf("\nj = %d",j);
-        j++;
+            j++;
+        }
 
     }
     return counter;
