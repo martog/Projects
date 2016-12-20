@@ -9,7 +9,7 @@
 int menu();
 char* file_read(char *filename);
 char* console_read();
-void write_to_file(char* text, int operators);
+void write_to_file(int operators, int sym_in_com);
 int find_match(char *buff, char* word);
 int operator_check(char *buff);
 int sym_check(char *buff);
@@ -29,7 +29,7 @@ int main(){
             scanf("%s",&filename);
             if(access(filename, F_OK ) != -1){
                 result = file_read(filename);
-                write_to_file("",operator_check(result));
+                write_to_file(operator_check(result),sym_check(result));
             }else{
                 printf("File not found!\n");
             }
@@ -39,7 +39,7 @@ int main(){
             scanf("%s",&filename);
             if(access(filename, F_OK ) != -1){
                 result = file_read(filename);
-                printf("Operators found: %d\n",operator_check(result));
+                printf("Operators: %d\nValid symbols in comments: %d\n",operator_check(result), sym_check(result));
             }else{
                 printf("File not found!\n");
             }
@@ -49,12 +49,11 @@ int main(){
             result = console_read();
             operator_check(result);
            // printf("u entered: %s\n", result);
-            write_to_file("",operator_check(result));
+            write_to_file(operator_check(result),sym_check(result));
         break;
         case 4:
             result = console_read();
-            printf("Operators found: %d\n",operator_check(result));
-            printf("Symbols found: %d\n", sym_check(result));
+            printf("Operators: %d\nValid symbols in comments: %d\n",operator_check(result), sym_check(result));
         break;
 
     }
@@ -115,7 +114,7 @@ char* file_read(char *filename){
     free(file_buff);
 }
 
-void write_to_file(char* text, int operators){
+void write_to_file(int operators, int sym_in_com){
     char filename[30];
 
     printf("Write the name of the output program:\n");
@@ -129,7 +128,7 @@ void write_to_file(char* text, int operators){
         exit(1);
     }
 
-    fprintf(fp, "Operators found: %d\nText:%s\n", operators, text);
+    fprintf(fp, "Operators: %d\nValid symbols in comments: %d\n", operators, sym_in_com);
     fclose(fp);
 }
 
@@ -193,7 +192,7 @@ int sym_check(char *buff){
         if(buff[i] == '/' && buff[i+1] == '*'){
             ml_comment_flag = 1;
         }
-        if(ml_comment_flag == 1 && buff[i] == '*' && buff[i] == '/'){
+        if(ml_comment_flag == 1 && buff[i] == '*' && buff[i+1] == '/'){
             ml_comment_flag = 0;
         }
         if(buff[i] == '/' && buff[i+1] == '/'){
@@ -202,7 +201,12 @@ int sym_check(char *buff){
         if(sl_comment_flag == 1 && buff[i] == '\n'){
             sl_comment_flag = 0;
         }
-        if(ml_comment_flag == 1 || sl_comment_flag == 1){
+        if(ml_comment_flag == 1){
+            if(buff[i]>='a' && buff[i] <= 'z'){
+                symbols++;
+            }
+        }
+         if(sl_comment_flag == 1){
             if(buff[i]>='a' && buff[i] <= 'z'){
                 symbols++;
             }
