@@ -12,6 +12,7 @@ char* console_read();
 void write_to_file(char* text, int operators);
 int find_match(char *buff, char* word);
 int operator_check(char *buff);
+int sym_check(char *buff);
 //-------functions--------//
 
 //----------main---------//
@@ -34,7 +35,7 @@ int main(){
             }
         break;
         case 2:
-            printf("Write the name of the program:\n");
+            printf("Write the name of the input program:\n");
             scanf("%s",&filename);
             if(access(filename, F_OK ) != -1){
                 result = file_read(filename);
@@ -53,6 +54,7 @@ int main(){
         case 4:
             result = console_read();
             printf("Operators found: %d\n",operator_check(result));
+            printf("Symbols found: %d\n", sym_check(result));
         break;
 
     }
@@ -179,5 +181,34 @@ char* console_read(){
 
     input[i] = '\0';
     return input;
+}
+
+int sym_check(char *buff){
+    int ml_comment_flag = 0;
+    int sl_comment_flag = 0;
+    int i = 0;
+    int symbols = 0;
+
+    while( i <= strlen(buff)){
+        if(buff[i] == '/' && buff[i+1] == '*'){
+            ml_comment_flag = 1;
+        }
+        if(ml_comment_flag == 1 && buff[i] == '*' && buff[i] == '/'){
+            ml_comment_flag = 0;
+        }
+        if(buff[i] == '/' && buff[i+1] == '/'){
+            sl_comment_flag = 1;
+        }
+        if(sl_comment_flag == 1 && buff[i] == '\n'){
+            sl_comment_flag = 0;
+        }
+        if(ml_comment_flag == 1 || sl_comment_flag == 1){
+            if(buff[i]>='a' && buff[i] <= 'z'){
+                symbols++;
+            }
+        }
+        i++;
+    }
+    return symbols;
 }
 
