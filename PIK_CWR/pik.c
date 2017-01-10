@@ -134,7 +134,7 @@ void write_to_file(int operators, int sym_in_com){
 
 int find_match(char *buff, char* word){
     int j = 0;
-    int i,counter = 0, ml_comment_flag = 0, sl_comment_flag = 0;
+    int i,counter = 0, ml_comment_flag = 0, sl_comment_flag = 0, quotes_flag = 0;
 
     for(i = 0;i < strlen(buff);i++){
         if(buff[i] == '/' && buff[i+1] == '*'){
@@ -149,7 +149,13 @@ int find_match(char *buff, char* word){
         if(sl_comment_flag == 1 && buff[i] == '\n'){
             sl_comment_flag = 0;
         }
-        if(sl_comment_flag == 0 && ml_comment_flag == 0){
+        if(buff[i] == '\"' && quotes_flag == 1){
+            quotes_flag = 0;
+        }
+        if(buff[i] == '\"'){
+            quotes_flag = 1;
+        }
+        if(sl_comment_flag == 0 && ml_comment_flag == 0 && quotes_flag == 0){
             if(buff[i] == word[j]){
                 if(j == strlen(word)-1){
                     counter++;
