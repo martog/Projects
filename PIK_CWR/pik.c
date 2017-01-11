@@ -151,9 +151,9 @@ int find_match(char *buff, char* word){
         }
         if(buff[i] == '\"' && quotes_flag == 1){
             quotes_flag = 0;
-        }
-        if(buff[i] == '\"'){
+        }else if(buff[i] == '\"'){
             quotes_flag = 1;
+
         }
         if(sl_comment_flag == 0 && ml_comment_flag == 0 && quotes_flag == 0){
             if(buff[i] == word[j]){
