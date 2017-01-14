@@ -1,0 +1,1 @@
+pyinstaller --onefile get_chrome_pass.py
